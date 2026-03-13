@@ -237,6 +237,101 @@ const excludedSelectors = [
 
 /******************************************************************************/
 
+// Page distillation: extract a minimal DOM tree around the selected element
+// suitable for LLM consumption. Filters out unstable/hashed attribute values.
+
+const unstableValuePattern = /^[0-9a-f]{6,}$|^[A-Za-z0-9_-]{20,}$|^css-|^_[0-9a-z]{4,}|^[0-9]+$/;
+const excludedAttrs = new Set([
+    'style', 'srcset', 'sizes', 'nonce', 'integrity', 'crossorigin',
+    'onload', 'onclick', 'onerror', 'onmouseover',
+]);
+const MAX_ATTR_VALUE_LENGTH = 80;
+const MAX_DISTILLED_HTML_LENGTH = 6000;
+
+function isUnstableValue(value) {
+    if ( typeof value !== 'string' ) { return false; }
+    if ( value.length > 120 ) { return true; }
+    return unstableValuePattern.test(value);
+}
+
+function distillElement(elem, depth) {
+    if ( depth > 15 ) { return ''; }
+    const tag = elem.localName;
+    const parts = [`<${tag}`];
+
+    // Id (only if stable)
+    if ( elem.id && isUnstableValue(elem.id) === false ) {
+        parts.push(` id="${elem.id}"`);
+    }
+
+    // Classes (only stable ones)
+    const stableClasses = [];
+    for ( const c of elem.classList ) {
+        if ( isUnstableValue(c) === false ) {
+            stableClasses.push(c);
+        }
+    }
+    if ( stableClasses.length > 0 ) {
+        parts.push(` class="${stableClasses.join(' ')}"`);
+    }
+
+    // Selected attributes (only stable name-value pairs)
+    for ( const name of elem.getAttributeNames() ) {
+        if ( name === 'id' || name === 'class' || name === 'style' ) { continue; }
+        if ( excludedAttrs.has(name) ) { continue; }
+        const value = elem.getAttribute(name);
+        if ( isUnstableValue(value) ) {
+            // Include attribute name only
+            parts.push(` ${name}`);
+        } else if ( value.length <= MAX_ATTR_VALUE_LENGTH ) {
+            parts.push(` ${name}="${value}"`);
+        } else {
+            parts.push(` ${name}`);
+        }
+    }
+    parts.push('>');
+
+    // Children: include only element children (skip text nodes for brevity)
+    for ( const child of elem.children ) {
+        parts.push(distillElement(child, depth + 1));
+    }
+
+    parts.push(`</${tag}>`);
+    return parts.join('');
+}
+
+function distillDOM(targetElem) {
+    // Walk up to find a reasonable context ancestor (max 4 levels)
+    let contextElem = targetElem;
+    for ( let i = 0; i < 4; i++ ) {
+        if ( contextElem.parentElement && contextElem.parentElement !== document.body ) {
+            contextElem = contextElem.parentElement;
+        } else {
+            break;
+        }
+    }
+
+    // Build a distilled HTML snippet
+    const distilled = distillElement(contextElem, 0);
+
+    // Also collect the target element's own tag path
+    const tagPath = [];
+    let el = targetElem;
+    while ( el && el !== document.body ) {
+        tagPath.unshift(el.localName);
+        el = el.parentElement;
+    }
+
+    return {
+        html: distilled.slice(0, MAX_DISTILLED_HTML_LENGTH),
+        targetTagPath: tagPath.join(' > '),
+        hostname: location.hostname,
+        url: location.href,
+    };
+}
+
+/******************************************************************************/
+
 async function previewSelector(selector) {
     if ( selector === previewedSelector ) { return; }
     if ( previewedSelector !== '' ) {
@@ -284,6 +379,11 @@ function onMessage(msg) {
         return ubolOverlay.sendMessage({ what: 'terminateCustomFilters' });
     case 'candidatesAtPoint':
         return candidatesAtPoint(msg.mx, msg.my, msg.broad);
+    case 'distillAtPoint': {
+        const elem = ubolOverlay.elementFromPoint(msg.mx, msg.my);
+        if ( elem === null || elem === document.body ) { return; }
+        return distillDOM(elem);
+    }
     case 'previewSelector':
         return previewSelector(msg.selector);
     default:
