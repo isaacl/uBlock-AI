@@ -245,6 +245,8 @@ const excludedAttrs = new Set([
     'style', 'srcset', 'sizes', 'nonce', 'integrity', 'crossorigin',
     'onload', 'onclick', 'onerror', 'onmouseover',
 ]);
+const MAX_ATTR_VALUE_LENGTH = 80;
+const MAX_DISTILLED_HTML_LENGTH = 6000;
 
 function isUnstableValue(value) {
     if ( typeof value !== 'string' ) { return false; }
@@ -281,7 +283,7 @@ function distillElement(elem, depth) {
         if ( isUnstableValue(value) ) {
             // Include attribute name only
             parts.push(` ${name}`);
-        } else if ( value.length <= 80 ) {
+        } else if ( value.length <= MAX_ATTR_VALUE_LENGTH ) {
             parts.push(` ${name}="${value}"`);
         } else {
             parts.push(` ${name}`);
@@ -321,7 +323,7 @@ function distillDOM(targetElem) {
     }
 
     return {
-        html: distilled.slice(0, 6000),
+        html: distilled.slice(0, MAX_DISTILLED_HTML_LENGTH),
         targetTagPath: tagPath.join(' > '),
         hostname: location.hostname,
         url: location.href,
