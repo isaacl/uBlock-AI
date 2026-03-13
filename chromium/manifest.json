@@ -9,9 +9,9 @@
   },
   "author": "Raymond Hill",
   "background": {
-      "service_worker": "/js/background.js",
-      "type": "module"
-   },
+    "service_worker": "/js/background.js",
+    "type": "module"
+  },
   "commands": {
     "enter-zapper-mode": {
       "description": "__MSG_zapperTipEnter__"
@@ -19,10 +19,6 @@
     "enter-picker-mode": {
       "description": "__MSG_pickerTipEnter__"
     }
-  },
-  "declarative_net_request": {
-    "rule_resources": [
-    ]
   },
   "default_locale": "en",
   "description": "__MSG_extShortDesc__",
@@ -42,7 +38,6 @@
   "options_page": "dashboard.html",
   "permissions": [
     "activeTab",
-    "declarativeNetRequest",
     "scripting",
     "storage"
   ],
@@ -52,15 +47,6 @@
   },
   "version": "1.0",
   "web_accessible_resources": [
-    {
-      "resources": [
-        "/strictblock.html"
-      ],
-      "matches": [
-        "<all_urls>"
-      ],
-      "use_dynamic_url": true
-    },
     {
       "resources": [
         "/zapper-ui.html"

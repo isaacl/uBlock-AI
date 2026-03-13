@@ -10,7 +10,9 @@
   },
   "author": "Raymond Hill",
   "background": {
-    "scripts": [ "/js/background.js" ],
+    "scripts": [
+      "/js/background.js"
+    ],
     "type": "module"
   },
   "browser_specific_settings": {
@@ -18,7 +20,9 @@
       "id": "uBOLiteRedux@raymondhill.net",
       "strict_min_version": "128.0",
       "data_collection_permissions": {
-        "required": [ "none" ]
+        "required": [
+          "none"
+        ]
       }
     },
     "gecko_android": {
@@ -33,10 +37,6 @@
       "description": "__MSG_pickerTipEnter__"
     }
   },
-  "declarative_net_request": {
-    "rule_resources": [
-    ]
-  },
   "default_locale": "en",
   "description": "__MSG_extShortDesc__",
   "icons": {
@@ -48,29 +48,20 @@
   "manifest_version": 3,
   "name": "uBO Lite",
   "options_ui": {
-      "open_in_tab": true,
-      "page": "dashboard.html"
+    "open_in_tab": true,
+    "page": "dashboard.html"
   },
   "host_permissions": [
     "<all_urls>"
   ],
   "permissions": [
     "activeTab",
-    "declarativeNetRequest",
     "scripting",
     "storage"
   ],
   "short_name": "uBO Lite",
   "version": "1.0",
   "web_accessible_resources": [
-    {
-      "resources": [
-        "/strictblock.html"
-      ],
-      "matches": [
-        "<all_urls>"
-      ]
-    },
     {
       "resources": [
         "/zapper-ui.html"

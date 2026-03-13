@@ -54,8 +54,8 @@ async function main() {
     );
 
     // https://learn.microsoft.com/answers/questions/918426/cant-update-extension-with-declarative-net-request
-    // Set all ruleset path to package root
-    for ( const ruleset of manifest.declarative_net_request.rule_resources ) {
+    // Set all ruleset path to package root (no-op when no rulesets are defined)
+    for ( const ruleset of manifest.declarative_net_request?.rule_resources ?? [] ) {
         const pos = ruleset.path.lastIndexOf('/');
         if ( pos === -1 ) { continue; }
         ruleset.path = ruleset.path.slice(pos + 1);

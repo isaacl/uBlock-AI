@@ -5,7 +5,9 @@
   },
   "author": "Raymond Hill",
   "background": {
-    "scripts": [ "/js/background.js" ],
+    "scripts": [
+      "/js/background.js"
+    ],
     "type": "module",
     "persistent": false
   },
@@ -21,10 +23,6 @@
     "enter-picker-mode": {
       "description": "__MSG_pickerTipEnter__"
     }
-  },
-  "declarative_net_request": {
-    "rule_resources": [
-    ]
   },
   "default_locale": "en",
   "description": "__MSG_extShortDesc__",
@@ -45,8 +43,6 @@
   ],
   "permissions": [
     "activeTab",
-    "declarativeNetRequest",
-    "declarativeNetRequestWithHostAccess",
     "scripting",
     "storage",
     "unlimitedStorage"
