@@ -21,6 +21,8 @@
 
 import * as scrmgr from './scripting-manager.js';
 
+import { LLM_PROVIDERS, parseLLMResponse, queryLLM } from './llm-api.js';
+
 import {
     addCustomFilters,
     customFiltersFromHostname,
@@ -38,6 +40,7 @@ import {
     localRead, localRemove, localWrite,
     runtime,
     sessionAccessLevel,
+    sessionRead, sessionWrite,
     webextFlavor,
 } from './ext.js';
 
@@ -47,6 +50,7 @@ import {
     ubolLog,
 } from './debug.js';
 
+import { SYSTEM_PROMPT } from './llm-system-prompt.js';
 import { gotoURL } from './ext-utils.js';
 import { toggleToolbarIcon } from './action.js';
 
@@ -217,6 +221,49 @@ function onMessage(request, sender, callback) {
     case 'getOptionsPageData':
         callback({});
         break;
+
+    // AI settings: save provider/model to local, API key to session
+    case 'saveAISettings':
+        Promise.all([
+            localWrite('ai.provider', request.provider),
+            localWrite('ai.model', request.model),
+            sessionWrite('ai.apiKey', request.apiKey),
+        ]).then(( ) => { callback({ ok: true }); });
+        return true;
+
+    case 'getAISettings':
+        Promise.all([
+            localRead('ai.provider'),
+            localRead('ai.model'),
+            sessionRead('ai.apiKey'),
+        ]).then(([ provider, model, apiKey ]) => {
+            callback({
+                provider: provider || 'openai',
+                model: model || 'gpt-4o-mini',
+                apiKey: apiKey || '',
+                providers: LLM_PROVIDERS,
+            });
+        });
+        return true;
+
+    // AI query: called from picker UI via service worker
+    case 'queryAI':
+        (async ( ) => {
+            try {
+                const provider = await localRead('ai.provider') || 'openai';
+                const model = await localRead('ai.model') || 'gpt-4o-mini';
+                const apiKey = await sessionRead('ai.apiKey') || '';
+                const raw = await queryLLM(
+                    provider, model, apiKey,
+                    SYSTEM_PROMPT, request.userPrompt
+                );
+                const suggestions = parseLLMResponse(raw);
+                callback({ suggestions, raw });
+            } catch ( error ) {
+                callback({ error: error.message });
+            }
+        })();
+        return true;
 
     default:
         break;

@@ -31,6 +31,7 @@ const selectorCompiler = new ExtSelectorCompiler({ nativeCssHas: true });
 let selectorPartsDB = new Map();
 let sliderParts = [];
 let sliderPartsPos = -1;
+let lastPickedPoint = null;
 
 /******************************************************************************/
 
@@ -99,6 +100,7 @@ function onSvgClicked(ev) {
         my: ev.clientY,
         broad: ev.ctrlKey,
     }).then(details => {
+        lastPickedPoint = { mx: ev.clientX, my: ev.clientY };
         showDialog(details);
     });
 }
@@ -363,6 +365,109 @@ function unpausePicker() {
 
 /******************************************************************************/
 
+// AI Selector Help
+// Distills DOM around the picked element and queries the LLM via service worker.
+
+async function onAIHelpClicked() {
+    if ( lastPickedPoint === null ) { return; }
+    if ( dom.cl.has(dom.root, 'ai-busy') ) { return; }
+
+    const statusEl = qs$('#ai-status-picker');
+    const listEl = qs$('#ai-suggestions');
+
+    dom.cl.add(dom.root, 'ai-busy');
+    statusEl.textContent = 'Asking AI for suggestions\u2026';
+    listEl.textContent = '';
+
+    try {
+        // Ask the content script to distill the DOM around the picked point
+        const distilled = await toolOverlay.postMessage({
+            what: 'distillAtPoint',
+            mx: lastPickedPoint.mx,
+            my: lastPickedPoint.my,
+        });
+
+        if ( distilled === undefined || distilled === null ) {
+            statusEl.textContent = 'Could not distill page context.';
+            dom.cl.remove(dom.root, 'ai-busy');
+            return;
+        }
+
+        // Build user prompt from distilled data
+        const currentSelector = qs$('textarea').value;
+        const userPrompt = buildUserPrompt(distilled, currentSelector);
+
+        // Query LLM via service worker
+        const result = await toolOverlay.sendMessage({
+            what: 'queryAI',
+            userPrompt,
+        });
+
+        if ( result?.error ) {
+            statusEl.textContent = `AI error: ${result.error}`;
+            dom.cl.remove(dom.root, 'ai-busy');
+            return;
+        }
+
+        const suggestions = result?.suggestions || [];
+        if ( suggestions.length === 0 ) {
+            statusEl.textContent = 'No suggestions returned.';
+            dom.cl.remove(dom.root, 'ai-busy');
+            return;
+        }
+
+        statusEl.textContent = `${suggestions.length} suggestion(s):`;
+        for ( const item of suggestions ) {
+            const li = document.createElement('li');
+
+            const selectorSpan = document.createElement('span');
+            selectorSpan.className = 'ai-selector';
+            selectorSpan.textContent = item.selector;
+            li.appendChild(selectorSpan);
+
+            if ( item.confidence ) {
+                const confSpan = document.createElement('span');
+                confSpan.className = 'ai-confidence';
+                confSpan.textContent = `[${item.confidence}]`;
+                li.appendChild(confSpan);
+            }
+
+            if ( item.reasoning ) {
+                const reasonSpan = document.createElement('span');
+                reasonSpan.className = 'ai-reasoning';
+                reasonSpan.textContent = item.reasoning;
+                li.appendChild(reasonSpan);
+            }
+
+            li.addEventListener('click', ( ) => {
+                qs$('textarea').value = item.selector;
+                highlightCandidate();
+            });
+
+            listEl.appendChild(li);
+        }
+    } catch ( ex ) {
+        statusEl.textContent = `Error: ${ex.message}`;
+    }
+
+    dom.cl.remove(dom.root, 'ai-busy');
+}
+
+function buildUserPrompt(distilled, currentSelector) {
+    const parts = [];
+    parts.push(`Page: ${distilled.hostname} (${distilled.url})`);
+    parts.push(`Target element path: ${distilled.targetTagPath}`);
+    if ( currentSelector ) {
+        parts.push(`Current candidate selector: ${currentSelector}`);
+    }
+    parts.push('');
+    parts.push('Distilled DOM around the selected ad element:');
+    parts.push(distilled.html);
+    return parts.join('\n');
+}
+
+/******************************************************************************/
+
 function startPicker() {
     toolOverlay.postMessage({ what: 'startTool' });
 
@@ -384,6 +489,7 @@ function startPicker() {
     dom.on('#moreOrLess > span:first-of-type', 'click', ( ) => { onViewToggled(1); });
     dom.on('#moreOrLess > span:last-of-type', 'click', ( ) => { onViewToggled(-1); });
     dom.on('#create', 'click', ( ) => { onCreateClicked(); });
+    dom.on('#ai-help', 'click', ( ) => { onAIHelpClicked(); });
     dom.on('#candidateFilters ul', 'click', onCandidateClicked);
     toolOverlay.highlightElementUnderMouse(true);
 }

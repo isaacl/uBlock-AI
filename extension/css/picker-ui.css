@@ -143,3 +143,56 @@
 #ubol-picker.preview #overlay path {
     display: none;
 }
+
+/* AI Help button and results */
+#ubol-picker #toolbar #ai-help {
+    min-width: 5em;
+}
+#ubol-picker.ai-busy #toolbar #ai-help {
+    opacity: 0.5;
+    pointer-events: none;
+}
+#ubol-picker #aiResults {
+    font-size: var(--monospace-size);
+    max-height: min(16em, 25vh);
+    overflow-y: auto;
+}
+#ubol-picker #aiResults:empty,
+#ubol-picker #aiResults:not(:has(li)):not(:has(#ai-status-picker:not(:empty))) {
+    display: none;
+}
+#ubol-picker #ai-status-picker {
+    padding: 2px 4px;
+    color: var(--ink-2);
+}
+#ubol-picker #ai-status-picker:empty {
+    display: none;
+}
+#ubol-picker #ai-suggestions {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+#ubol-picker #ai-suggestions > li {
+    border-top: 1px solid var(--border-1);
+    cursor: pointer;
+    padding: 4px;
+    word-break: break-all;
+}
+#ubol-picker #ai-suggestions > li:hover {
+    background-color: var(--surface-2);
+}
+#ubol-picker #ai-suggestions > li .ai-selector {
+    font-family: monospace;
+}
+#ubol-picker #ai-suggestions > li .ai-confidence {
+    font-size: 0.85em;
+    color: var(--ink-3);
+    margin-inline-start: 0.5em;
+}
+#ubol-picker #ai-suggestions > li .ai-reasoning {
+    display: block;
+    font-size: 0.8em;
+    color: var(--ink-3);
+    margin-top: 2px;
+}

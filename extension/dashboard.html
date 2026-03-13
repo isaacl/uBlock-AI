@@ -19,6 +19,7 @@
         <nav id="dashboard-nav">
             <span class="logo"><img data-i18n-title="extName" src="img/ublock.svg" alt="uBO Lite"></span><!--
          --><button class="tabButton" type="button" data-pane="filters" data-i18n="customFiltersPageName" tabindex="0"></button><!--
+         --><button class="tabButton" type="button" data-pane="ai-settings" tabindex="0">AI Settings</button><!--
          --><button class="tabButton" type="button" data-pane="about" data-i18n="aboutPageName" tabindex="0"></button>
         </nav>
     </header>
@@ -35,6 +36,30 @@
                 </p>
             </details>
         </aside>
+    </section>
+    <!-- -------- -->
+    <section data-pane="ai-settings">
+        <div class="body">
+            <h3>AI Model Configuration</h3>
+            <p>Configure the AI provider and model used for selector suggestions in the element picker.</p>
+            <div class="ai-setting-row">
+                <label for="ai-provider">Provider</label>
+                <select id="ai-provider"></select>
+            </div>
+            <div class="ai-setting-row">
+                <label for="ai-model">Model</label>
+                <select id="ai-model"></select>
+            </div>
+            <div class="ai-setting-row">
+                <label for="ai-apikey">API Key</label>
+                <input id="ai-apikey" type="password" autocomplete="off" placeholder="Enter your API key">
+            </div>
+            <p class="ai-key-note">The API key is stored in session storage restricted to the extension service worker. It is not persisted to disk and must be re-entered each browser session.</p>
+            <p>
+                <button id="ai-save" class="preferred iconified" type="button"><span class="fa-icon">save</span><span>Save</span><span class="hover"></span></button>
+            </p>
+            <div id="ai-status"></div>
+        </div>
     </section>
     <!-- -------- -->
     <section data-pane="about">
@@ -91,6 +116,7 @@
 <script src="js/i18n.js" type="module"></script>
 <script src="js/dashboard.js" type="module"></script>
 <script src="js/settings.js" type="module"></script>
+<script src="js/ai-settings-ui.js" type="module"></script>
 <script src="js/filter-manager-ui.js" type="module"></script>
 
 </body>

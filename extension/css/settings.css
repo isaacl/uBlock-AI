@@ -359,3 +359,36 @@ body.busy section[data-pane="busy"] .fa-icon {
     font-size: 4em;
     margin: 2em;
 }
+
+/* AI Settings pane */
+section[data-pane="ai-settings"] .ai-setting-row {
+    display: flex;
+    align-items: center;
+    gap: 1em;
+    margin: 0.75em 0;
+}
+section[data-pane="ai-settings"] .ai-setting-row label {
+    min-width: 6em;
+    font-weight: 500;
+}
+section[data-pane="ai-settings"] .ai-setting-row select,
+section[data-pane="ai-settings"] .ai-setting-row input {
+    flex-grow: 1;
+    max-width: 24em;
+    padding: 0.35em 0.5em;
+    border: 1px solid var(--border-1);
+    border-radius: 3px;
+    background-color: var(--surface-1);
+    color: var(--ink-1);
+    font-size: var(--font-size);
+}
+section[data-pane="ai-settings"] .ai-key-note {
+    color: var(--ink-3);
+    font-size: var(--font-size-smaller);
+    margin-top: 0.25em;
+}
+section[data-pane="ai-settings"] #ai-status {
+    margin-top: 0.5em;
+    font-size: var(--font-size-smaller);
+    min-height: 1.5em;
+}
