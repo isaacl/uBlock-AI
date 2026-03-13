@@ -1,25 +1,16 @@
 {
-  "name": "uBlock",
+  "name": "ublock-ai",
   "version": "1.0.0",
-  "description": "npm dev tools",
+  "description": "Element picker extension with AI-assisted selector generation",
   "type": "module",
   "scripts": {
-    "lint": "eslint --no-warn-ignored --ignore-pattern \"**/lib/\" --ignore-pattern \"**/npm/\" -- \"./src/js/*.js\" \"./src/js/**/*.js\" \"./**/*.json\" \"./platform/**/*.js\"",
+    "lint": "eslint --no-warn-ignored --ignore-pattern \"**/lib/\" --ignore-pattern \"**/punycode.js\" -- \"./extension/js/*.js\" \"./extension/js/**/*.js\" \"./**/*.json\"",
     "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/gorhill/uBlock.git"
   },
   "author": "Raymond Hill",
   "license": "GPLv3",
-  "bugs": {
-    "url": "https://github.com/gorhill/uBlock/issues"
-  },
-  "homepage": "https://github.com/gorhill/uBlock#readme",
   "engines": {
-    "node": ">=22",
-    "npm": ">=11"
+    "node": ">=17.5.0"
   },
   "devDependencies": {
     "@eslint/compat": "^1.2.4",
