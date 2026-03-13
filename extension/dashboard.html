@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+<meta name="color-scheme" content="light dark" />
+<title data-i18n="dashboardName"></title>
+<link rel="stylesheet" href="css/default.css">
+<link rel="stylesheet" href="css/common.css">
+<link rel="stylesheet" href="css/fa-icons.css">
+<link rel="stylesheet" href="css/dashboard-common.css">
+<link rel="stylesheet" href="css/settings.css">
+<link rel="icon" type="image/png" href="img/icon_64.png"/>
+</head>
+
+<body data-pane="filters" class="loading">
+    <!-- -------- -->
+    <header>
+        <nav id="dashboard-nav">
+            <span class="logo"><img data-i18n-title="extName" src="img/ublock.svg" alt="uBO Lite"></span><!--
+         --><button class="tabButton" type="button" data-pane="filters" data-i18n="customFiltersPageName" tabindex="0"></button><!--
+         --><button class="tabButton" type="button" data-pane="about" data-i18n="aboutPageName" tabindex="0"></button>
+        </nav>
+    </header>
+    <!-- -------- -->
+    <section data-pane="filters">
+        <ul class="hostnames"></ul>
+        <aside>
+            <details class="importFromText"><summary data-i18n="customFiltersImportExportLabel">_</summary>
+                <div><textarea spellcheck="false" placeholder="customFiltersImportTextareaPlaceholder"></textarea></div>
+                <p>
+                    <button class="iconified dontshrink" type="button"><span class="fa-icon">check</span><span data-i18n="addButton">_</span><span class="hover"></span></button>
+                    <button class="iconified dontshrink" type="button"><span class="fa-icon">download-alt</span><span data-i18n="importAndAppendButton">_</span><span class="hover"></span></button>
+                    <button class="iconified dontshrink" type="button"><span class="fa-icon">upload-alt</span><span data-i18n="exportButton">_</span><span class="hover"></span></button><input type="file" accept="text/plain">
+                </p>
+            </details>
+        </aside>
+    </section>
+    <!-- -------- -->
+    <section data-pane="about">
+        <div class="body">
+            <div id="aboutNameVer" class="li"></div>
+            <div class="liul">
+                <div class="li">Copyright (c) Raymond Hill 2014-present</div>
+            </div>
+            <div class="li"><a href="https://github.com/uBlockOrigin/uBOL-home/wiki/Privacy-policy" data-i18n="aboutPrivacyPolicy"></a></div>
+            <div class="li"><a href="https://github.com/gorhill/uBlock" data-i18n="aboutCode"></a></div>
+            <div class="li"><span data-i18n="aboutDependencies"></span></div>
+            <div class="liul">
+                <div class="li"><span><a href="https://github.com/rsms/inter" target="_blank">Inter font family</a> by <a href="https://github.com/rsms">Rasmus Andersson</a></span></div>
+                <div class="li"><span><a href="https://fontawesome.com/" target="_blank">FontAwesome font family</a> by <a href="https://github.com/davegandy">Dave Gandy</a></span></div>
+                <div class="li"><span><a href="https://github.com/mathiasbynens/punycode.js" target="_blank">Punycode.js</a> by <a href="https://github.com/mathiasbynens">Mathias Bynens</a></span></div>
+            </div>
+            <hr>
+            <details><summary data-i18n="supportS5H"></summary>
+            <pre style="user-select:all; -webkit-user-select:all; direction:ltr;"></pre>
+            </details>
+        </div>
+    </section>
+    <!-- -------- -->
+    <section data-pane="busy">
+        <div>
+            <span class="fa-icon">spinner</span>
+        </div>
+    </section>
+    <!-- -------- -->
+    <template id="customFiltersHostname">
+        <li class="hostname"><div><span class="hostname" spellcheck="false" contenteditable="plaintext-only" data-pretty="" data-ugly=""></span><span class="remove fa-icon">trash-o</span><span class="undo fa-icon">undo</span></div>
+        <ul class="selectors"></ul>
+        </li>
+    </template>
+    <template id="customFiltersSelector">
+        <li class="selector"><div><span class="selector" spellcheck="false" contenteditable="plaintext-only" data-pretty="" data-ugly=""></span><span class="remove fa-icon">trash-o</span><span class="undo fa-icon">undo</span></div></li>
+    </template>
+    <template class="io-panel">
+        <span class="io-panel">
+            <button id="apply" class="preferred iconified" type="button" disabled><span class="fa-icon">save</span><span data-i18n="saveButton">_</span><span class="hover"></span></button>
+            <button id="revert" class="iconified" type="button" disabled><span class="fa-icon">undo</span><span data-i18n="revertButton">_</span><span class="hover"></span></button>
+            <button id="import" class="iconified" type="button"><span class="fa-icon">download-alt</span><span data-i18n="importAndAppendButton">_</span><span class="hover"></span></button>
+            <button id="export" class="iconified" type="button"><span class="fa-icon">upload-alt</span><span data-i18n="exportButton">_</span><span class="hover"></span></button><input type="file" accept="json/application">
+        </span>
+    </template>
+    <template class="feedback-panel">
+        <div class="info-panel feedback-panel">
+            <div class="info"></div>
+            <div class="close"></div>
+        </div>
+    </template>
+<script src="js/theme.js" type="module"></script>
+<script src="js/fa-icons.js" type="module"></script>
+<script src="js/i18n.js" type="module"></script>
+<script src="js/dashboard.js" type="module"></script>
+<script src="js/settings.js" type="module"></script>
+<script src="js/filter-manager-ui.js" type="module"></script>
+
+</body>
+
+</html>

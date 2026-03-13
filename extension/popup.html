@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html id="uBO-popup-panel" class="desktop">
+
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark" />
+<link rel="stylesheet" href="css/default.css">
+<link rel="stylesheet" href="css/common.css">
+<link rel="stylesheet" href="css/fa-icons.css">
+<link rel="stylesheet" href="css/popup.css">
+<title data-i18n="extName"></title>
+</head>
+
+<body class="loading busy">
+
+<main>
+    <div id="hostname"><span></span>&shy;<span></span></div>
+    <!-- -------- -->
+    <div class="toolMenu localTools needHTTP">
+        <label data-i18n="popupLocalToolsLabel"></label>
+        <span id="gotoZapper" class="tool enabled" tabindex="0">
+            <span class="fa-icon">bolt</span>
+            <span data-i18n="zapperTipEnter">_</span>
+        </span>
+        <span id="gotoPicker" class="tool enabled" tabindex="0">
+            <span class="fa-icon">eye-slash</span>
+            <span data-i18n="pickerTipEnter">_</span>
+        </span>
+        <span id="gotoUnpicker" class="tool" tabindex="0">
+            <span class="fa-icon">eye-open</span>
+            <span data-i18n="unpickerTipEnter">_</span>
+        </span>
+    </div>
+    <!-- -------- -->
+    <div class="toolRibbon globalTools">
+        <span id="gotoDashboard" class="fa-icon tool enabled" tabindex="0" data-i18n-title="popupTipDashboard">cogs<span class="caption" data-i18n="popupTipDashboard"></span></span>
+    </div>
+</main>
+<aside>
+    <span class="fa-icon">spinner</span>
+</aside>
+
+<script src="js/theme.js" type="module"></script>
+<script src="js/fa-icons.js" type="module"></script>
+<script src="js/i18n.js" type="module"></script>
+<script src="js/popup.js" type="module"></script>
+
+</body>
+
+</html>
